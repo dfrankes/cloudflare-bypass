@@ -20,10 +20,8 @@ module.exports = async function (config) {
 
     // Validate if we hit the cloudflare UAM page
     if (pageBody.includes('cf-im-under-attack')) {
-
         // Wait for the cf_clearance cookie
-        const clearance = await new Promise((resolve, reject) => {
-            let count = 0;
+        const clearance = await new Promise((resolve) => {
             target.on('request', async (request) => {
                 const { cookies } = await target._client.send('Network.getAllCookies');
                 let cf_clearance = cookies.findIndex((c) => c.name === 'cf_clearance');
@@ -38,4 +36,5 @@ module.exports = async function (config) {
         await browser.close();
         return clearance;
     }
+    return false;
 };
