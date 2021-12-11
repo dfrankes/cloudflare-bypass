@@ -1,0 +1,22 @@
+{
+  "name": "cloudflare-bypass",
+  "version": "1.0.0",
+  "description": "A package to bypass the Cloudflare UAM using puppeteer",
+  "main": "src/cloudflare-bypass.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Davy Frankes",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^13.0.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0"
+  },
+  "keywords": [
+    "Cloudflare UAM bypass",
+    "cloudflare bypass scraper",
+    "cloudflare scraper node",
+    "cloudflare UAM scraper"
+  ]
+}
