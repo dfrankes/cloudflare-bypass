@@ -21,20 +21,31 @@ module.exports = async function (config) {
     // Validate if we hit the cloudflare UAM page
     if (pageBody.includes('cf-im-under-attack')) {
         // Wait for the cf_clearance cookie
-        const clearance = await new Promise((resolve) => {
+        const clearance = new Promise((resolve) => {
             target.on('request', async (request) => {
                 const { cookies } = await target._client.send('Network.getAllCookies');
                 let cf_clearance = cookies.findIndex((c) => c.name === 'cf_clearance');
                 if (cf_clearance > -1) {
                     cf_clearance = cookies[cf_clearance];
-                    resolve(cf_clearance);
+                    resolve(cookies);
                 }
             });
         });
 
-        await target.close();
-        await browser.close();
-        return clearance;
+        const taskCheck = new Promise(resolve => {
+            setTimeout(() => resolve(true), 10000);
+        })
+
+        // It should not take longer then 5 seconds to get the clearance cookie, 
+        // we create a Promise.race to give it a max timer of 10 seconds just to be sure
+        let result = await Promise.race([clearance, taskCheck]);
+        if(result && result.findIndex((c) => c.name === 'cf_clearance')){
+            result.useragent = await browser.userAgent();
+            await target.close();
+            await browser.close();
+            return result;
+        }
+        return false;
     }
     return false;
 };
